@@ -13,6 +13,10 @@
 # limitations under the License.
 # [START cloudbuild_python_yaml]
 # [START cloudbuild_python_dependencies_yaml]
+substitutions:
+  _ARTIFACT_REGISTRY_REPO: my-repository
+  _BUCKET_NAME: my-bucket
+
 steps:
   # Install dependencies
   - name: python
