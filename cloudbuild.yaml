@@ -15,7 +15,9 @@
 # [START cloudbuild_python_dependencies_yaml]
 substitutions:
   _ARTIFACT_REGISTRY_REPO: my-repository
-  _BUCKET_NAME: my-bucket
+  _SERVICE_NAME: cloud-build-python
+  _REGION: us-central1
+  _SA_EMAIL: ai-app-v3@guyue-001.iam.gserviceaccount.com
 
 steps:
   # Install dependencies
@@ -48,20 +50,12 @@ steps:
   # [START cloudbuild_python_deploy_yaml]
   # Deploy to Cloud Run
   - name: google/cloud-sdk
-    args: ['gcloud', 'run', 'deploy', 'cloud-build-python', 
+    args: ['gcloud', 'run', 'deploy', '${_SERVICE_NAME}', 
            '--image=us-central1-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY_REPO}/myimage:${SHORT_SHA}', 
-           '--region', 'us-central1', '--platform', 'managed', 
+           '--region', '${_REGION}', '--platform', 'managed', 
+           '--service-account', '${_SA_EMAIL}',
            '--allow-unauthenticated']
   # [END cloudbuild_python_deploy_yaml]
-  
-# # [START cloudbuild_python_logs_yaml]
-# # Save test logs to Google Cloud Storage
-# artifacts:
-#   objects:
-#     location: gs://${_BUCKET_NAME}/
-#     paths:
-#       - ${SHORT_SHA}_test_log.xml
-# # [END cloudbuild_python_logs_yaml]
 
 # Store images in Google Artifact Registry 
 images:
