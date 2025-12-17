@@ -466,8 +466,13 @@
                         res = await fetch(endpoint);
                     }
 
-                    if (res.ok) success++;
-                    else fail++;
+                    if (res.ok) {
+                        success++;
+                    } else {
+                        fail++;
+                        log(`Req failed: ${res.status} ${res.statusText}`);
+                    }
+
                 } catch (e) {
                     fail++;
                 } finally {
