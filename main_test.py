@@ -26,9 +26,9 @@ def client():
 
 def test_handler_no_env_variable(client):
     r = client.get("/")
-
-    # assert r.data.decode() == "Hello World!"
     assert r.status_code == 200
+    assert "Echo Server" in r.data.decode()
+
 
 
 def test_handler_with_env_variable(client):
@@ -37,3 +37,16 @@ def test_handler_with_env_variable(client):
 
     # assert r.data.decode() == "Hello Foo!"
     assert r.status_code == 200
+
+
+def test_health(client):
+    r = client.get("/health")
+    assert r.status_code == 200
+    assert r.data.decode() == "OK"
+
+
+def test_process(client):
+    data = {"key": "value"}
+    r = client.post("/process", json=data)
+    assert r.status_code == 200
+    assert r.json == data

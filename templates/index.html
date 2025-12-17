@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Echo Server - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-color: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --success-color: #4ade80;
+            --error-color: #f87171;
+            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.1) 0%, transparent 20%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                grid-template-columns: 1fr 1fr;
+            }
+            .header {
+                grid-column: 1 / -1;
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 600;
+            background: linear-gradient(to right, var(--accent-color), #a855f7);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: var(--glass-border);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: var(--glass-border);
+            padding-bottom: 0.5rem;
+            color: var(--accent-color);
+        }
+
+        .endpoint-list {
+            list-style: none;
+        }
+
+        .endpoint-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: var(--glass-border);
+        }
+
+        .endpoint-item:last-child {
+            border-bottom: none;
+        }
+
+        .method {
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            margin-right: 1rem;
+        }
+
+        .method.get { background: rgba(74, 222, 128, 0.2); color: var(--success-color); }
+        .method.post { background: rgba(248, 113, 113, 0.2); color: var(--error-color); }
+
+        .path {
+            font-family: monospace;
+            font-size: 1.1rem;
+            flex-grow: 1;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(15, 23, 42, 0.5);
+            border: var(--glass-border);
+            border-radius: 0.5rem;
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--accent-color);
+            color: #0f172a;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-box {
+            background: rgba(15, 23, 42, 0.3);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .log-area {
+            margin-top: 1rem;
+            height: 150px;
+            overflow-y: auto;
+            background: rgba(15, 23, 42, 0.5);
+            border: var(--glass-border);
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Echo Server</h1>
+        <p>Week 1 Quiz Implementation</p>
+    </div>
+
+    <div class="container">
+        <!-- Endpoints Card -->
+        <div class="card">
+            <h2>Available Endpoints</h2>
+            <ul class="endpoint-list">
+                <li class="endpoint-item">
+                    <span class="method get">GET</span>
+                    <span class="path">/</span>
+                    <span>Home</span>
+                </li>
+                <li class="endpoint-item">
+                    <span class="method get">GET</span>
+                    <span class="path">/health</span>
+                    <span>Health Check</span>
+                </li>
+                <li class="endpoint-item">
+                    <span class="method post">POST</span>
+                    <span class="path">/process</span>
+                    <span>Echo JSON</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Load Tester Card -->
+        <div class="card">
+            <h2>Load Tester</h2>
+            <div class="form-group">
+                <label for="endpoint">Target Endpoint</label>
+                <select id="endpoint" class="form-control">
+                    <option value="/health">/health</option>
+                    <option value="/process">/process</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="requests">Total Requests</label>
+                <input type="number" id="requests" class="form-control" value="100" min="1" max="1000">
+            </div>
+            <div class="form-group">
+                <label for="concurrency">Concurrency</label>
+                <input type="number" id="concurrency" class="form-control" value="10" min="1" max="50">
+            </div>
+            <button id="startBtn" class="btn" onclick="startTest()">Start Stress Test</button>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-value" id="successCount">0</div>
+                    <div class="stat-label">Success</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="failCount">0</div>
+                    <div class="stat-label">Failed</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="avgLatency">-</div>
+                    <div class="stat-label">Avg Latency (ms)</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="testDuration">-</div>
+                    <div class="stat-label">Duration (s)</div>
+                </div>
+            </div>
+            <div class="log-area" id="logArea"></div>
+        </div>
+    </div>
+
+    <script>
+        async function startTest() {
+            const endpoint = document.getElementById('endpoint').value;
+            const totalRequests = parseInt(document.getElementById('requests').value);
+            const concurrency = parseInt(document.getElementById('concurrency').value);
+            const startBtn = document.getElementById('startBtn');
+            const logArea = document.getElementById('logArea');
+
+            // Reset stats
+            let completed = 0;
+            let success = 0;
+            let fail = 0;
+            let totalLatency = 0;
+            
+            document.getElementById('successCount').innerText = '0';
+            document.getElementById('failCount').innerText = '0';
+            document.getElementById('avgLatency').innerText = '-';
+            document.getElementById('testDuration').innerText = '-';
+            logArea.innerHTML = '';
+            
+            startBtn.disabled = true;
+            startBtn.innerText = 'Running...';
+            
+            const startTime = performance.now();
+            log(`Starting test: ${totalRequests} reqs to ${endpoint} with concurrency ${concurrency}`);
+
+            const queue = Array(totalRequests).fill(0);
+            let active = 0;
+
+            async function worker() {
+                while (completed < totalRequests) {
+                    // Simple mutex-like check to ensure we don't over-schedule
+                    if (active >= concurrency && completed + active < totalRequests) {
+                        await new Promise(r => setTimeout(r, 10));
+                        continue;
+                    }
+                    
+                    if (completed + active >= totalRequests) break; 
+                    
+                    active++;
+                    const reqId = completed + active; // Approx ID
+                    
+                    const reqStart = performance.now();
+                    try {
+                        let res;
+                        if (endpoint === '/process') {
+                            res = await fetch(endpoint, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ test_id: reqId, timestamp: Date.now() })
+                            });
+                        } else {
+                            res = await fetch(endpoint);
+                        }
+                        
+                        if (res.ok) success++;
+                        else fail++;
+                        
+                    } catch (e) {
+                        fail++;
+                        log(`Req failed: ${e.message}`);
+                    } finally {
+                        const reqEnd = performance.now();
+                        totalLatency += (reqEnd - reqStart);
+                        active--;
+                        completed++;
+                        updateStats();
+                    }
+                }
+            }
+
+            // Start workers
+            const workers = [];
+            for (let i = 0; i < concurrency; i++) {
+                workers.push(worker());
+            }
+
+            await Promise.all(workers);
+
+            const endTime = performance.now();
+            const duration = ((endTime - startTime) / 1000).toFixed(2);
+            
+            document.getElementById('testDuration').innerText = duration;
+            startBtn.disabled = false;
+            startBtn.innerText = 'Start Stress Test';
+            log(`Test finished in ${duration}s`);
+        }
+
+        function updateStats() {
+            const successEl = document.getElementById('successCount');
+            const failEl = document.getElementById('failCount');
+            const avgLatEl = document.getElementById('avgLatency');
+
+            const total = parseInt(successEl.innerText) + parseInt(failEl.innerText) + 1; // current is processed
+            // But actually we have global vars
+            const totalProcessed = document.querySelectorAll('.stat-value')[0].innerText; // simple hack re-read not needed
+
+            // Use global vars
+            // We need to access the variables in startTest scope? No, closure.
+            // Wait, helper function cannot access closure vars unless passed or defined inside.
+            // Let's move updateStats inside startTest or just update DOM directly in worker.
+        }
+
+        function log(msg) {
+            const logArea = document.getElementById('logArea');
+            logArea.innerHTML += `<div>[${new Date().toLocaleTimeString()}] ${msg}</div>`;
+            logArea.scrollTop = logArea.scrollHeight;
+        }
+
+        // Redefine startTest to include worker properly to avoid scope issues
+        // Overwriting the previous function essentially
+        
+        // Let's rewrite the logic cleaner in one go in the script block.
+    </script>
+    <script>
+        // Clean script implementation
+        async function startTest() {
+            const endpoint = document.getElementById('endpoint').value;
+            const totalRequests = parseInt(document.getElementById('requests').value);
+            const concurrency = parseInt(document.getElementById('concurrency').value);
+            const startBtn = document.getElementById('startBtn');
+            const logArea = document.getElementById('logArea');
+            
+            // Stats
+            let success = 0;
+            let fail = 0;
+            let totalLatency = 0;
+            let processed = 0;
+
+            // Update UI Helper
+            function updateUI() {
+                document.getElementById('successCount').innerText = success;
+                document.getElementById('failCount').innerText = fail;
+                if (processed > 0) {
+                    document.getElementById('avgLatency').innerText = (totalLatency / processed).toFixed(1);
+                }
+            }
+
+            function log(msg) {
+                logArea.innerHTML += `<div>[${new Date().toLocaleTimeString()}] ${msg}</div>`;
+                logArea.scrollTop = logArea.scrollHeight;
+            }
+
+            // Reset
+            success = 0; fail = 0; totalLatency = 0; processed = 0;
+            updateUI();
+            document.getElementById('testDuration').innerText = '-';
+            logArea.innerHTML = '';
+            
+            startBtn.disabled = true;
+            startBtn.innerText = 'Running...';
+            log(`Starting: ${totalRequests} reqs to ${endpoint}`);
+
+            const startTime = performance.now();
+            
+            // Queue management
+            let scheduled = 0;
+            const promises = [];
+
+            async function runRequest() {
+                const reqStart = performance.now();
+                try {
+                    let res;
+                    if (endpoint === '/process') {
+                        res = await fetch(endpoint, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id: scheduled, ts: Date.now() })
+                        });
+                    } else {
+                        res = await fetch(endpoint);
+                    }
+
+                    if (res.ok) success++;
+                    else fail++;
+                } catch (e) {
+                    fail++;
+                } finally {
+                    const reqEnd = performance.now();
+                    totalLatency += (reqEnd - reqStart);
+                    processed++;
+                    updateUI();
+                }
+            }
+
+            async function worker() {
+                while (scheduled < totalRequests) {
+                    scheduled++;
+                    await runRequest();
+                }
+            }
+
+            // We need to limit concurrency. 
+            // Better pattern for fixed concurrency:
+            // Create N workers, each keeps picking tasks until scheduled >= totalRequests.
+            
+            // Reset scheduled for workers
+            scheduled = 0;
+            const workers = [];
+            for (let i=0; i<concurrency; i++) {
+                workers.push((async () => {
+                    while(true) {
+                        if (scheduled >= totalRequests) break;
+                        // Claim a task
+                        scheduled++;
+                        await runRequest();
+                    }
+                })());
+            }
+
+            await Promise.all(workers);
+
+            const endTime = performance.now();
+            const duration = ((endTime - startTime) / 1000).toFixed(2);
+            document.getElementById('testDuration').innerText = duration;
+            startBtn.disabled = false;
+            startBtn.innerText = 'Start Stress Test';
+            log(`Finished in ${duration}s`);
+        }
+    </script>
+</body>
+</html>
