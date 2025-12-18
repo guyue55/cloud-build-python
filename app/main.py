@@ -15,7 +15,10 @@ def hello_world():
     Returns:
         str: 渲染后的 HTML 内容.
     """
-    return render_template("index.html")
+    env_test = os.environ.get("ENV_TEST", "Not Set")
+    env_date = os.environ.get("ENV_DATE", "Not Set")
+    return render_template("index.html", env_test=env_test, env_date=env_date)
+
 
 
 

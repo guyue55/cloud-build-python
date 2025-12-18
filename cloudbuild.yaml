@@ -19,6 +19,10 @@ substitutions:
   _REGION: us-central1
   _SA_EMAIL: ai-app-v3@guyue-001.iam.gserviceaccount.com
   _IMAGE_NAME: myimage
+  # Cloud Build Substitutions (Defaults)
+  # User-defined variables must start with underscore (_)
+  _ENV_TEST: default_test
+  _ENV_DATE: default_date
 
 steps:
   # Install dependencies
@@ -57,7 +61,9 @@ steps:
            '--service-account', '${_SA_EMAIL}',
            '--allow-unauthenticated',
            '--concurrency', '10', 
-           '--min-instances', '2']
+           '--min-instances', '2',
+           '--set-env-vars', 'ENV_TEST=${_ENV_TEST},ENV_DATE=${_ENV_DATE}']
+
   # [END cloudbuild_python_deploy_yaml]
 
 # Store images in Google Artifact Registry 
