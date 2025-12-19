@@ -23,6 +23,7 @@ substitutions:
   # User-defined variables must start with underscore (_)
   _ENV_TEST: default_test
   _ENV_DATE: default_date
+  _MODEL_NAME: gemini-1.5-flash
 
 steps:
   # Install dependencies
@@ -62,7 +63,7 @@ steps:
            '--allow-unauthenticated',
            '--concurrency', '100', 
            '--min-instances', '2',
-           '--set-env-vars', 'ENV_TEST=${_ENV_TEST},ENV_DATE=${_ENV_DATE},PROJECT_ID=${PROJECT_ID},LOCATION=${_REGION}']
+           '--set-env-vars', 'ENV_TEST=${_ENV_TEST},ENV_DATE=${_ENV_DATE},PROJECT_ID=${PROJECT_ID},LOCATION=${_REGION},MODEL_NAME=${_MODEL_NAME}']
 
   # [END cloudbuild_python_deploy_yaml]
 

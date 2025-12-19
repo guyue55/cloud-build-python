@@ -12,8 +12,10 @@ def ask_gemini(prompt):
     """
     project_id = os.environ.get("PROJECT_ID", "Not Set")
     location = os.environ.get("LOCATION", "Not Set")
+    model_name = os.environ.get("MODEL_NAME", "gemini-1.5-flash")
+
 
     vertexai.init(project=project_id, location=location)
-    model = GenerativeModel("gemini-1.5-flash")
+    model = GenerativeModel(f'model/{model_name}')
     response = model.generate_content(prompt)
     return response.text
