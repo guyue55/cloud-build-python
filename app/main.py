@@ -1,9 +1,22 @@
 # coding: utf-8
+
 import os
 
 from flask import Flask, request, render_template, jsonify
 
+from .core import ask_gemini
+
 app = Flask(__name__)
+
+
+@app.route('/chat')
+def chat():
+    try:    
+        user_input = request.args.get('q', '自我介绍一下')
+        ai_response = ask_gemini(user_input)
+        return jsonify({"reply": ai_response})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route("/")
@@ -18,9 +31,6 @@ def hello_world():
     env_test = os.environ.get("ENV_TEST", "Not Set")
     env_date = os.environ.get("ENV_DATE", "Not Set")
     return render_template("index.html", env_test=env_test, env_date=env_date)
-
-
-
 
 @app.route("/health")
 def health():
