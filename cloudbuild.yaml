@@ -60,7 +60,7 @@ steps:
            '--region', '${_REGION}', '--platform', 'managed', 
            '--service-account', '${_SA_EMAIL}',
            '--allow-unauthenticated',
-           '--concurrency', '10', 
+           '--concurrency', '100', 
            '--min-instances', '2',
            '--set-env-vars', 'ENV_TEST=${_ENV_TEST},ENV_DATE=${_ENV_DATE}']
 
