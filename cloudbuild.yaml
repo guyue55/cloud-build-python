@@ -62,7 +62,7 @@ steps:
            '--allow-unauthenticated',
            '--concurrency', '100', 
            '--min-instances', '2',
-           '--set-env-vars', 'ENV_TEST=${_ENV_TEST},ENV_DATE=${_ENV_DATE}']
+           '--set-env-vars', 'ENV_TEST=${_ENV_TEST},ENV_DATE=${_ENV_DATE},PROJECT_ID=${PROJECT_ID},LOCATION=${_REGION}']
 
   # [END cloudbuild_python_deploy_yaml]
 
