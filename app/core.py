@@ -16,6 +16,6 @@ def ask_gemini(prompt):
 
 
     vertexai.init(project=project_id, location=location)
-    model = GenerativeModel(f'model/{model_name}')
+    model = GenerativeModel(model_name)
     response = model.generate_content(prompt)
     return response.text
