@@ -18,7 +18,7 @@ try:
     
     vertexai.init(project="guyue-001", location="us-central1")
     model = GenerativeModel(
-        model_name="gemini-2.0-flash",
+        model_name="gemini-2.5-flash",
         system_instruction=[system_prompt] # 关键：在这里注入指令
     )
     q = "你是谁？"
