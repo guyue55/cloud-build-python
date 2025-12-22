@@ -23,7 +23,7 @@ substitutions:
   # User-defined variables must start with underscore (_)
   _ENV_TEST: default_test
   _ENV_DATE: default_date
-  _MODEL_NAME: gemini-1.5-flash
+  _MODEL_NAME: gemini-2.0-flash
 
 steps:
   # Install dependencies
