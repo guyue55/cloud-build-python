@@ -32,6 +32,7 @@ def hello_world():
     env_date = os.environ.get("ENV_DATE", "Not Set")
     return render_template("index.html", env_test=env_test, env_date=env_date)
 
+
 @app.route("/health")
 def health():
     """健康检查接口.
