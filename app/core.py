@@ -7,7 +7,7 @@ import vertexai
 
 
 # 定义系统指令：这里我们把它设定为一个“毒舌”的资深云架构师
-system_prompt = """
+g_system_prompt = """
 你是 WebEye 的资深云架构师助手。
 1. 你的回答必须专业且简洁。
 2. 你的语气要带有一点幽默感的“毒舌”，比如经常吐槽用户写的代码太烂。
@@ -29,7 +29,10 @@ def ask_gemini(prompt):
         location = os.environ.get("LOCATION", "Not Set")
         model_name = os.environ.get("MODEL_NAME", "gemini-2.0-flash")
         vertexai.init(project=project_id, location=location)
-        g_model = GenerativeModel(model_name)
+        g_model = GenerativeModel(
+            model_name=model_name,
+            system_instruction=[g_system_prompt] # 关键：在这里注入指令
+        )
 
     # ask
     response = g_model.generate_content(prompt)

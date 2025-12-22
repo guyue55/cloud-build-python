@@ -22,7 +22,7 @@ try:
         system_instruction=[system_prompt] # 关键：在这里注入指令
     )
     q = "你是谁？"
-    q = "如何做红烧肉？"
+    # q = "土豆炖牛肉怎么做"
     response = model.generate_content(q)
     print(f"AI 回复: {response.text}")
 except Exception as e:
