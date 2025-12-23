@@ -4,7 +4,7 @@ import os
 
 from flask import Flask, request, render_template, jsonify
 
-from .core import ask_gemini
+from .core import ask_gemini, AIModelRole
 
 app = Flask(__name__)
 
@@ -13,7 +13,9 @@ app = Flask(__name__)
 def chat():
     try:    
         user_input = request.args.get('q', '自我介绍一下')
-        ai_response = ask_gemini(user_input)
+        role = request.args.get('role', AIModelRole.DEFAULT)
+        print(f"Role: {role}, User input: {user_input[:80]}")
+        ai_response = ask_gemini(user_input, role.lower())
         return jsonify({"reply": ai_response})
     except Exception as e:
         return jsonify({"error": str(e)}), 500

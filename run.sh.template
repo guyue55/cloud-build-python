@@ -1,4 +1,7 @@
-export PROJECT_ID=$(gcloud config get-value project)
+PROJECT_ID=$(gcloud config get-value project)
+echo $PROJECT_ID
+
+export PROJECT_ID=$PROJECT_ID
 export LOCATION=us-east4
 
 gunicorn --bind :8080 --workers 1 --threads 8 --timeout 15 app.main:app
