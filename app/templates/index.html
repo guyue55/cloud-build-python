@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Echo Server - Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         :root {
             --bg-color: #0f172a;
@@ -269,6 +270,30 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* Markdown Styles for Chat */
+        #chatHistory pre {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin: 0.5rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #chatHistory code {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e2e8f0;
+        }
+
+        #chatHistory p {
+            margin-bottom: 0.5rem;
+        }
+
+        #chatHistory p:last-child {
+            margin-bottom: 0;
+        }
     </style>
 </head>
 <body>
@@ -381,6 +406,10 @@
                     </div>
                 </div>
                 <div class="form-group" style="display: flex; gap: 0.5rem;">
+                    <select id="chatRole" class="form-control" style="width: 150px;">
+                        <option value="default">Cloud Architect</option>
+                        <option value="classifier">Classifier</option>
+                    </select>
                     <input type="text" id="chatInput" class="form-control" placeholder="Type your message..." onkeypress="if(event.key === 'Enter') sendChat()">
                     <button class="btn" onclick="sendChat()" style="width: auto;">Send</button>
                 </div>
@@ -652,7 +681,8 @@
             historyEl.scrollTop = historyEl.scrollHeight;
 
             try {
-                const res = await fetch(`/chat?q=${encodeURIComponent(message)}`);
+                const role = document.getElementById('chatRole').value;
+                const res = await fetch(`/chat?q=${encodeURIComponent(message)}&role=${role}`);
                 const data = await res.json();
                 
                 // Remove Loading
@@ -666,12 +696,11 @@
                         </div>
                     `;
                 } else {
-                    // Convert newlines to <br> for display
-                    const reply = data.reply.replace(/\n/g, '<br>');
+                    const content = marked.parse(data.reply);
                     historyEl.innerHTML += `
                         <div style="align-self: flex-start; background: rgba(56, 189, 248, 0.2); padding: 0.5rem 1rem; border-radius: 0.5rem; max-width: 80%;">
                             <span style="font-size: 0.8rem; color: var(--accent-color); display: block; margin-bottom: 0.2rem;">AI</span>
-                            ${reply}
+                            ${content}
                         </div>
                     `;
                 }
