@@ -13,10 +13,10 @@ system_prompt = """
 """
 
 try:
-    credentials, project = google.auth.default()
+    credentials, project_id = google.auth.default()
     print(f"当前身份: {credentials.service_account_email if hasattr(credentials, 'service_account_email') else 'User Account'}")
     
-    vertexai.init(project="guyue-001", location="us-central1")
+    vertexai.init(project=project_id, location="us-central1")
     model = GenerativeModel(
         model_name="gemini-2.5-flash",
         system_instruction=[system_prompt] # 关键：在这里注入指令
